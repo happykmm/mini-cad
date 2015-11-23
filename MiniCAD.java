@@ -66,22 +66,17 @@ public class MiniCAD extends JFrame {
 			canvasPanel.setBackground(Color.WHITE);
 			canvasPanel.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
-					activeButton.mouseDown(e.getX(), e.getY());
-				}
-
-				public void mouseClicked(MouseEvent e) {
-					canvasPanel.requestFocus();
 					int actualX = e.getX();
 					int actualY = e.getY();
 					if (e.getComponent() instanceof ShapeComponent) {
 						actualX += e.getComponent().getX();
 						actualY += e.getComponent().getY();
 					}
-					activeButton.mouseClick(actualX, actualY);
+					activeButton.mouseDown(actualX, actualY);
 				}
 
-				public void mouseReleased(MouseEvent e) {
-					activeButton.mouseUp(e.getX(), e.getY());
+				public void mouseClicked(MouseEvent e) {
+					canvasPanel.requestFocus();
 				}
 			});
 		}
@@ -124,6 +119,7 @@ public class MiniCAD extends JFrame {
 				shapeComponent.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						if (!(activeButton instanceof SelectButton)) {
+							canvasPanel.processMouseEvent(e);
 							return;
 						}
 						if (shape2D().contains(e.getX(), e.getY())) {
@@ -135,13 +131,6 @@ public class MiniCAD extends JFrame {
 							handleRect2D = null;
 						}
 						shapeComponent.repaint();
-					}
-					
-					public void mouseClicked(MouseEvent e) {
-						if (!(activeButton instanceof SelectButton)) {
-							canvasPanel.processMouseEvent(e);
-							return;
-						}
 					}
 				});
 				
@@ -332,7 +321,6 @@ public class MiniCAD extends JFrame {
 		
 		public void mouseClick(int x, int y) {};
 		public void mouseDown(int x, int y) {};
-		public void mouseUp(int x, int y) {};
 		public void Cancel() {};
 	}
 	
@@ -344,7 +332,7 @@ public class MiniCAD extends JFrame {
 		}
 
 		@Override
-		public void mouseClick(int x, int y) {
+		public void mouseDown(int x, int y) {
 			System.out.println("Select is clicked");
 		}
 
@@ -359,7 +347,7 @@ public class MiniCAD extends JFrame {
 		}
 
 		@Override
-		public void mouseClick(int x, int y) {
+		public void mouseDown(int x, int y) {
 			System.out.println("Draw Text is clicked");
 			
 		}
@@ -377,7 +365,7 @@ public class MiniCAD extends JFrame {
 		}
 
 		@Override
-		public void mouseClick(int x, int y) {
+		public void mouseDown(int x, int y) {
 			state++;
 			if (state == 1) {
 				startX = x;
