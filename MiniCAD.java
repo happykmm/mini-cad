@@ -108,6 +108,7 @@ public class MiniCAD extends JFrame {
 			Rectangle2D handleRect2D;
 			
 			abstract protected Shape shape2D();
+			abstract protected boolean contains(double x, double y);
 			
 			public ShapeComponent(int x1, int y1, int x2, int y2) {
 				this.width = Math.abs(x2 - x1);
@@ -122,7 +123,7 @@ public class MiniCAD extends JFrame {
 							canvasPanel.processMouseEvent(e);
 							return;
 						}
-						if (shape2D().contains(e.getX(), e.getY())) {
+						if (contains(e.getX(), e.getY())) {
 							shapeComponent.requestFocus();
 							handleRect2D = shape2D().getBounds2D();
 							deltaX = e.getX();
@@ -139,7 +140,7 @@ public class MiniCAD extends JFrame {
 						if (!(activeButton instanceof SelectButton))  {
 							return;
 						}
-						if (shape2D().contains(e.getX(), e.getY())) {
+						if (contains(e.getX(), e.getY())) {
 							currentX = e.getX() + shapeComponent.getX();
 							currentY = e.getY() + shapeComponent.getY();
 							shapeComponent.setLocation(currentX - deltaX, currentY - deltaY);
@@ -186,7 +187,7 @@ public class MiniCAD extends JFrame {
 			@Override
 			public void paint(Graphics g) {
 				Graphics2D g2D = (Graphics2D) g;
-				g2D.draw(ellipse2D);
+				g2D.draw(shape2D());
 				if (handleRect2D != null) {
 					double x = handleRect2D.getX();
 					double y = handleRect2D.getY();
@@ -202,6 +203,11 @@ public class MiniCAD extends JFrame {
 					// bottom
 					g2D.fill(new Rectangle.Double(x + w * 0.5 - 3.0, y + h - 3.0, 6.0, 6.0));
 				}
+			}
+
+			@Override
+			protected boolean contains(double x, double y) {
+				return shape2D().contains(x, y);
 			}
 		}
 		
@@ -222,7 +228,7 @@ public class MiniCAD extends JFrame {
 			@Override
 			public void paint(Graphics g) {
 				Graphics2D g2D = (Graphics2D) g;
-				g2D.draw(rectangle2D);
+				g2D.draw(shape2D());
 				if (handleRect2D != null) {
 					double x = handleRect2D.getX();
 					double y = handleRect2D.getY();
@@ -238,6 +244,11 @@ public class MiniCAD extends JFrame {
 					// bottom-right
 					g2D.fill(new Rectangle.Double(x+w-3.0, y+h-3.0, 6.0, 6.0));
 				}
+			}
+
+			@Override
+			protected boolean contains(double x, double y) {
+				return shape2D().contains(x, y);
 			}
 		}
 		
@@ -257,18 +268,23 @@ public class MiniCAD extends JFrame {
 			@Override
 			public void paint(Graphics g) {
 				Graphics2D g2D = (Graphics2D) g;
-				g2D.draw(line2D);
+				g2D.draw(shape2D());
 				if (handleRect2D != null) {
-					double x = handleRect2D.getX();
-					double y = handleRect2D.getY();
-					double w = handleRect2D.getWidth();
-					double h = handleRect2D.getHeight();
+					double x1 = line2D.getX1();
+					double y1 = line2D.getY1();
+					double x2 = line2D.getX2();
+					double y2 = line2D.getY2();
 					g2D.setColor(Color.black);
-					// top-left
-					g2D.fill(new Rectangle.Double(x-3.0, y-3.0, 6.0, 6.0));
-					// bottom-right
-					g2D.fill(new Rectangle.Double(x+w-3.0, y+h-3.0, 6.0, 6.0));
+					// start point
+					g2D.fill(new Rectangle.Double(x1-3.0, y1-3.0, 6.0, 6.0));
+					// end point
+					g2D.fill(new Rectangle.Double(x2-3.0, y2-3.0, 6.0, 6.0));
 				}
+			}
+
+			@Override
+			protected boolean contains(double x, double y) {
+				return line2D.intersectsLine(x-1, y-1, 2, 2);
 			}
 			
 		}
@@ -311,8 +327,7 @@ public class MiniCAD extends JFrame {
 			super(title);
 			myButton.setPreferredSize(new Dimension(130, 32));
 			myButton.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					System.out.println("A button is clicked");
+				public void mousePressed(MouseEvent e) {
 					activeButton.Cancel();
 					activeButton = myButton;
 				}
