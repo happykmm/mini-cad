@@ -86,14 +86,14 @@ public class MiniCAD extends JFrame {
 			});
 		}
 		
-		public void NewEllipse(int width, int height, int left, int top) {
-			EllipseComponent ellipse = new EllipseComponent(width, height, left, top);
+		public void NewEllipse(int x1, int y1, int x2, int y2) {
+			EllipseComponent ellipse = new EllipseComponent(x1, y1, x2, y2);
 			canvasPanel.add(ellipse);
 			canvasPanel.repaint();
 		}
 		
-		public void NewRectangle(int width, int height, int left, int top) {
-			RectangleComponent rectangle = new RectangleComponent(width, height, left, top);
+		public void NewRectangle(int x1, int y1, int x2, int y2) {
+			RectangleComponent rectangle = new RectangleComponent(x1, y1, x2, y2);
 			canvasPanel.add(rectangle);
 			canvasPanel.repaint();
 		}
@@ -114,11 +114,11 @@ public class MiniCAD extends JFrame {
 			
 			abstract protected Shape shape2D();
 			
-			public ShapeComponent(int width, int height, int left, int top) {
-				this.width = width;
-				this.height = height;
-				this.left = left;
-				this.top = top;
+			public ShapeComponent(int x1, int y1, int x2, int y2) {
+				this.width = Math.abs(x2 - x1);
+				this.height = Math.abs(y2 - y1);
+				this.left = Math.min(x1, x2);
+				this.top = Math.min(y1, y2);
 				shapeComponent.setSize(width, height);
 				shapeComponent.setLocation(left, top);
 				shapeComponent.addMouseListener(new MouseAdapter() {
@@ -184,9 +184,9 @@ public class MiniCAD extends JFrame {
 		class EllipseComponent extends ShapeComponent {
 			Ellipse2D ellipse2D;
 
-			public EllipseComponent(int width, int height, int left, int top) {
-				super(width+1, height+1, left, top);
-				ellipse2D = new Ellipse2D.Double(0, 0, width, height);
+			public EllipseComponent(int x1, int y1, int x2, int y2) {
+				super(x1, y1, x2, y2);
+				ellipse2D = new Ellipse2D.Double(0, 0, width-1, height-1);
 			}
 			
 			@Override
@@ -220,9 +220,9 @@ public class MiniCAD extends JFrame {
 		class RectangleComponent extends ShapeComponent {
 			Rectangle2D rectangle2D;
 			
-			public RectangleComponent(int width, int height, int left, int top) {
-				super(width+1, height+1, left, top);
-				rectangle2D = new Rectangle2D.Double(0, 0, width, height);
+			public RectangleComponent(int x1, int y1, int x2, int y2) {
+				super(x1, y1, x2, y2);
+				rectangle2D = new Rectangle2D.Double(0, 0, width-1, height-1);
 			}
 
 			@Override
@@ -256,12 +256,8 @@ public class MiniCAD extends JFrame {
 			Line2D line2D;
 			
 			public LineComponent(int x1, int y1, int x2, int y2) {
-				int width = Math.abs(x2 - x1);
-				int height = Math.abs(y2 - y1);
-				int left = Math.min(x1, x2);
-				int top = Math.min(y1, y2);
-				super(width, height, left, top);
-				line2D = new Line2D.Double(0, 0, width, height);
+				super(x1, y1, x2, y2);
+				line2D = new Line2D.Double(x1-left, y1-top, x2-left, y2-top);
 			}
 
 			@Override
@@ -419,11 +415,7 @@ public class MiniCAD extends JFrame {
 
 		@Override
 		protected void DrawShape(int endX, int endY) {
-			int width = Math.abs(endX - startX);
-			int height = Math.abs(endY - startY);
-			int left = Math.min(startX, endX);
-			int top = Math.min(startY, endY);
-			canvasPanel.NewRectangle(width, height, left, top);
+			canvasPanel.NewRectangle(startX, startY, endX, endY);
 		}
 	}
 	
@@ -435,11 +427,7 @@ public class MiniCAD extends JFrame {
 
 		@Override
 		protected void DrawShape(int endX, int endY) {
-			int width = Math.abs(endX - startX);
-			int height = Math.abs(endY - startY);
-			int left = Math.min(startX, endX);
-			int top = Math.min(startY, endY);
-			canvasPanel.NewEllipse(width, height, left, top);
+			canvasPanel.NewEllipse(startX, startY, endX, endY);
 		}
 	}
 	
