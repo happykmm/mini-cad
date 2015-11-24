@@ -53,6 +53,25 @@ public class MiniCAD extends JFrame {
 			});
 		}
 		
+		public void OpenData() {
+			String data = "";
+			try {
+				FileInputStream file = new FileInputStream("data.txt");
+				InputStreamReader reader = new InputStreamReader(file, "UTF-8");
+				StringBuffer buffer = new StringBuffer();
+				while (reader.ready()) {
+					buffer.append((char)reader.read());
+				}
+				data = buffer.toString();
+				reader.close();
+				file.close();
+			}
+			catch (Exception e) {
+				System.err.println(e);
+			}
+			System.out.println(data);
+		}
+		
 		public void SaveData() {
 			String data = "";
 			for (Component component : canvasPanel.getComponents()) {
@@ -84,7 +103,7 @@ public class MiniCAD extends JFrame {
 					data += type + " " + x + " " + y + " " + w + " " + h + extra + ";";
 				}
 			}
-			System.out.println(data);
+			//System.out.println(data);
 			try {
 				FileOutputStream file = new FileOutputStream("data.txt");
 				OutputStreamWriter writer = new OutputStreamWriter(file, "UTF-8");
@@ -93,7 +112,7 @@ public class MiniCAD extends JFrame {
 				file.close();
 			}
 			catch(Exception e) {
-				System.out.println(e);
+				System.err.println(e);
 			}
 			
 		}
@@ -367,7 +386,7 @@ public class MiniCAD extends JFrame {
 			openButton.setPreferredSize(new Dimension(130, 32));
 			openButton.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
-					System.out.println("Open Success");
+					canvasPanel.OpenData();
 				}
 			});
 		}
