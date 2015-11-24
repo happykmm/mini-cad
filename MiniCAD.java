@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 public class MiniCAD extends JFrame {
@@ -50,9 +52,43 @@ public class MiniCAD extends JFrame {
 			});
 		}
 		
+		public void SaveData() {
+			String data = "";
+			for (Component component : canvasPanel.getComponents()) {
+				System.out.println(component);
+				if (component instanceof LineComponent) {
+					LineComponent line = ((LineComponent)component);
+					Line2D line2D = line.line2D;
+					double x1 = line2D.getX1() + line.getX();
+					double y1 = line2D.getY1() + line.getY();
+					double x2 = line2D.getX2() + line.getX();
+					double y2 = line2D.getY2() + line.getY();
+					data += "line " + x1 + " " + y1 + " " + x2 + " " + y2 + "\n";
+				} else
+				if (	component instanceof RectangleComponent || 
+						component instanceof EllipseComponent ||
+						component instanceof JTextField) {
+					double x = component.getX();
+					double y = component.getY();
+					double w = component.getWidth();
+					double h = component.getHeight();
+					String type, extra = "";
+					if (component instanceof RectangleComponent) 
+						type = "rect";
+					else if (component instanceof EllipseComponent)
+						type = "elli";
+					else {
+						type = "text";
+						extra = " " + ((JTextField)component).getText();
+					}
+					data += type + " " + x + " " + y + " " + w + " " + h + extra + "\n";
+				}
+			}
+			System.out.println(data);
+		}
+		
 		public void NewText(int x, int y) {
 			JTextField text = new JTextField();
-			//text.setMinimumSize(new Dimension(30,30));
 			text.setSize(new Dimension(100, 30));
 			text.setLocation(x, y);
 			text.setBackground(null);
@@ -233,7 +269,7 @@ public class MiniCAD extends JFrame {
 		}
 		
 		class LineComponent extends ShapeComponent {
-			Line2D line2D;
+			public Line2D line2D;
 			
 			public LineComponent(int x1, int y1, int x2, int y2) {
 				super(x1, y1, x2, y2);
@@ -268,8 +304,6 @@ public class MiniCAD extends JFrame {
 			}
 			
 		}
-		
-		
 	}
 
 	
@@ -307,7 +341,7 @@ public class MiniCAD extends JFrame {
 			saveButton.setPreferredSize(new Dimension(130, 32));
 			saveButton.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
-					System.out.println("Save Success");
+					canvasPanel.SaveData();
 				}
 			});
 		}
