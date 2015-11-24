@@ -69,7 +69,26 @@ public class MiniCAD extends JFrame {
 			catch (Exception e) {
 				System.err.println(e);
 			}
-			System.out.println(data);
+			//System.out.println(data);
+			String[] records = data.split(";");
+			canvasPanel.removeAll();
+			for (String record : records) {
+				String[] attrs = record.split(" ");
+				String type = attrs[0];
+				int n1 = (int) Math.round(Double.parseDouble(attrs[1]));
+				int n2 = (int) Math.round(Double.parseDouble(attrs[2]));
+				int n3 = (int) Math.round(Double.parseDouble(attrs[3]));
+				int n4 = (int) Math.round(Double.parseDouble(attrs[4]));
+				String extra = (attrs.length > 5) ? attrs[5] : "";
+				if (type.equals("text"))
+					canvasPanel.NewText(n1, n2, n3, n4, extra);
+				else if (type.equals("line"))
+					canvasPanel.NewLine(n1, n2, n3, n4);
+				else if (type.equals("rect"))
+					canvasPanel.NewRectangle(n1, n2, n3, n4);
+				else if (type.equals("elli"))
+					canvasPanel.NewEllipse(n1, n2, n3, n4);
+			}
 		}
 		
 		public void SaveData() {
@@ -117,9 +136,9 @@ public class MiniCAD extends JFrame {
 			
 		}
 		
-		public void NewText(int x, int y) {
-			JTextField text = new JTextField();
-			text.setSize(new Dimension(100, 30));
+		public void NewText(int x, int y, int w, int h, String s) {
+			JTextField text = new JTextField(s);
+			text.setSize(new Dimension(w, h));
 			text.setLocation(x, y);
 			text.setBackground(null);
 			text.requestFocus();
@@ -433,7 +452,7 @@ public class MiniCAD extends JFrame {
 
 		@Override
 		public void mouseDown(int x, int y) {
-			canvasPanel.NewText(x, y);
+			canvasPanel.NewText(x, y, 100, 30, "");
 		}
 		
 	}
