@@ -1,38 +1,7 @@
-import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Event;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RectangularShape;
-
-import javafx.scene.layout.Border;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.*;
+import javax.swing.*;
 
 public class MiniCAD extends JFrame {
 
@@ -79,6 +48,14 @@ public class MiniCAD extends JFrame {
 					canvasPanel.requestFocus();
 				}
 			});
+		}
+		
+		public void NewText(int x, int y) {
+			JTextField text = new JTextField();
+			text.setSize(new Dimension(300, 30));
+			text.setLocation(x, y);
+			canvasPanel.add(text);
+			canvasPanel.repaint();
 		}
 		
 		public void NewEllipse(int x1, int y1, int x2, int y2) {
@@ -350,8 +327,6 @@ public class MiniCAD extends JFrame {
 		public void mouseDown(int x, int y) {
 			System.out.println("Select is clicked");
 		}
-
-
 	}
 	
 	
@@ -363,8 +338,7 @@ public class MiniCAD extends JFrame {
 
 		@Override
 		public void mouseDown(int x, int y) {
-			System.out.println("Draw Text is clicked");
-			
+			canvasPanel.NewText(x, y);
 		}
 		
 	}
