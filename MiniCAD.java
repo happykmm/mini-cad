@@ -13,7 +13,7 @@ public class MiniCAD extends JFrame {
 
 	public MiniCAD() {
 		frame.setTitle("MiniCAD - ZhongYu");
-		frame.setSize(new Dimension(800, 600));
+		frame.setSize(new Dimension(1000, 600));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(canvasPanel, BorderLayout.CENTER);
 		frame.add(buttonPanel, BorderLayout.NORTH);
@@ -52,8 +52,11 @@ public class MiniCAD extends JFrame {
 		
 		public void NewText(int x, int y) {
 			JTextField text = new JTextField();
-			text.setSize(new Dimension(300, 30));
+			//text.setMinimumSize(new Dimension(30,30));
+			text.setSize(new Dimension(100, 30));
 			text.setLocation(x, y);
+			text.setBackground(null);
+			text.requestFocus();
 			canvasPanel.add(text);
 			canvasPanel.repaint();
 		}
@@ -281,24 +284,52 @@ public class MiniCAD extends JFrame {
 		private DrawRectButton btnRect = new DrawRectButton("Draw Rectangle");
 		private DrawElliButton btnElli = new DrawElliButton("Draw Ellipse");
 		private DrawTextButton btnText = new DrawTextButton("Draw Text");
+		private SaveButton btnSave = new SaveButton("Save");
+		private OpenButton btnOpen = new OpenButton("Open");
 		
 		public ButtonPanel() {
 			buttonPanel.setBackground(Color.lightGray);
 			buttonPanel.setPreferredSize(new Dimension(500, 42));
 			buttonPanel.add(btnSelect);	buttonPanel.add(btnLine); buttonPanel.add(btnRect);	buttonPanel.add(btnElli); buttonPanel.add(btnText);
 			buttonGroup.add(btnSelect);	buttonGroup.add(btnLine); buttonGroup.add(btnRect); buttonGroup.add(btnElli); buttonGroup.add(btnText);
+			buttonPanel.add(btnSave);  buttonPanel.add(btnOpen);
 			activeButton = btnSelect;
 		}
 
 	}
 
 	
+	class SaveButton extends JButton {
+		private SaveButton saveButton = this;
+
+		public SaveButton(String title) {
+			super(title);
+			saveButton.setPreferredSize(new Dimension(130, 32));
+			saveButton.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					System.out.println("Save Success");
+				}
+			});
+		}
+	}
+	
+	
+	class OpenButton extends JButton {
+		private OpenButton openButton = this;
+		
+		public OpenButton(String title) {
+			super(title);
+			openButton.setPreferredSize(new Dimension(130, 32));
+			openButton.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					System.out.println("Open Success");
+				}
+			});
+		}
+	}
+	
 	class MyButton extends JToggleButton {
 		private MyButton myButton = this;
-
-		public MyButton() {
-			this("");
-		}
 
 		public MyButton(String title) {
 			super(title);
