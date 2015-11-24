@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
+import java.io.*;
 
 import javax.swing.*;
 
@@ -55,7 +56,6 @@ public class MiniCAD extends JFrame {
 		public void SaveData() {
 			String data = "";
 			for (Component component : canvasPanel.getComponents()) {
-				System.out.println(component);
 				if (component instanceof LineComponent) {
 					LineComponent line = ((LineComponent)component);
 					Line2D line2D = line.line2D;
@@ -63,7 +63,7 @@ public class MiniCAD extends JFrame {
 					double y1 = line2D.getY1() + line.getY();
 					double x2 = line2D.getX2() + line.getX();
 					double y2 = line2D.getY2() + line.getY();
-					data += "line " + x1 + " " + y1 + " " + x2 + " " + y2 + "\n";
+					data += "line " + x1 + " " + y1 + " " + x2 + " " + y2 + ";";
 				} else
 				if (	component instanceof RectangleComponent || 
 						component instanceof EllipseComponent ||
@@ -81,10 +81,21 @@ public class MiniCAD extends JFrame {
 						type = "text";
 						extra = " " + ((JTextField)component).getText();
 					}
-					data += type + " " + x + " " + y + " " + w + " " + h + extra + "\n";
+					data += type + " " + x + " " + y + " " + w + " " + h + extra + ";";
 				}
 			}
 			System.out.println(data);
+			try {
+				FileOutputStream file = new FileOutputStream("data.txt");
+				OutputStreamWriter writer = new OutputStreamWriter(file, "UTF-8");
+				writer.write(data);
+				writer.close();
+				file.close();
+			}
+			catch(Exception e) {
+				System.out.println(e);
+			}
+			
 		}
 		
 		public void NewText(int x, int y) {
